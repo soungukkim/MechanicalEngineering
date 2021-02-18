@@ -1,0 +1,60 @@
+from matplotlib import *
+import matplotlib.pyplot as plt
+from numpy import *
+import numpy as np
+from math import *
+import math as m
+from sympy import *
+V2 = symbols('V2')
+
+P1 = 683  #kPa at 50도
+P2 = 683  #kPa at 40도
+fm = 0.017 #fm = 0.33/((Re)^0.25)
+L = 0.016     # 열교환되는 부 길이 m
+D = 0.00356 # D-pipe 외경 m
+v = 1/12  # 비체적 m3/kg
+m = 0.0003 # 질량 유량 kg/s
+A = pi*(D**2)/4 #파이프 단면적 m2
+V1 = m*(1/A)*(v) # D-pipe 입구 속도
+Vm = (V1 + V2)/2 # D-pipe 입구와 출구의 평균 속도 m/s
+vis = 7.2*(10**(-7)) # Kinetic Viscosity
+Pr = 0.78
+k = 0.02 # 열전도도 W/mK
+
+V1 = m*(1/A)*(v)
+
+eq1 = ((P1 - P2) - (fm*L*(Vm**2))/(2*D*v))*A
+
+eq2 = m*(V2 - V1)
+
+eqn = Eq(eq1, eq2)
+
+sol = solve(eqn, V2)
+
+sol
+
+Re = ((1/v)*D*sol[1])/vis
+
+Re
+
+Nu = 0.023*((Re**0.8)*(Pr**0.4))
+
+Nu
+
+h = (Nu * k) / D
+
+h
+
+N(V1)
+
+L1 = symbols("L1")
+R1 = 0.004
+R2 = 0.004
+S = (2*pi) / (acosh(((L1)**2 - (R1)**2 - (R2)**2 / (2 * R1 * R2))))
+
+S.subs(L1, 1)
+
+f = 0.33/((Re)**0.25)
+
+f
+
