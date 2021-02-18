@@ -1,0 +1,60 @@
+from sympy import *
+import numpy as np
+import matplotlib.pyplot as plt
+
+x1 = symbols('x1')  #리턴덕트 내 표면 온도
+T_re1 = 1   #초기 리턴덕트 내 온도
+ref = -23   #고내 온도 강 기준
+PU_k = 0.018    #PU thermal conductivity
+air_vis = 0.000013  #Kinetic viscosity
+air_k = 0.026   #air thermal conductivity
+Pr = 0.7    #Prandtl Number
+p1 = np.arange(0.01, 0.08, 0.005)   #고내-리턴덕트 사이의 두께
+D_L = 0.6   #유로 길이
+A_re = 0.1  #리턴덕트 면적
+h_s1 = 15   #리턴덕트 내 열전달 계수
+h_re1 = 28  #고내 열전달 계수
+sol1_list = []
+
+for t in p1:
+
+    Q_s1 = h_s1 * A_re * (T_re1-x1) #리턴덕트 내 표면 열전달 현상
+    Q_re1 = (T_re1-ref)/((1/(h_re1 * A_re))*((t)/(PU_k * A_re))*(1/(h_s1 * A_re)))  #고내부터 리턴덕트내까지의 총열전달 현상
+    eqn1 = Eq(Q_s1, Q_re1)
+
+    sol1 = solve(eqn1,x1)
+    sol1_list.extend(sol1)
+
+    print(*sol1,t,sep='')
+    print(Q_s1)
+
+x2 = symbols('x2')  #외기벽 표면 온도
+RT = 25 #외기 온도
+PU_k = 0.018
+air_vis = 0.000013
+air_k = 0.026
+Pr = 0.7
+p2 = np.arange(0.01, 0.08, 0.005)    #리턴덕트-외기쪽벽 사이의 두께
+
+D_L = 0.6
+A_re = 0.1
+sol2_list = []
+for j in sol1_list:
+    for i in p2:
+
+        h_s2 = 8
+        h_re2 = 15
+
+        Q_s2 = h_s2 * A_re * (RT-x2)    #외기벽쪽 표면 열전달 현상
+        Q_re2 = (RT-j)/((1/(h_re2 * A_re))*((i)/(PU_k * A_re))*(1/(h_s2 * A_re)))   #리턴덕트내 부터 외기까지 총열전달 현상
+        eqn2 = Eq(Q_s2, Q_re2)
+
+        sol2 = solve(eqn2,x2)
+        sol2_list.extend(sol2)
+        print(j, *sol2, i, sep='')
+        print(Q_s2)
+#plt.plot(p1, sol1_list)
+#plt.plot(p2, sol2_list)
+#plt.xlabel('R_re_duct -ref PU t [mm]')
+#plt.ylabel('R_re_surface T [Celsius]')
+#plt.show()
