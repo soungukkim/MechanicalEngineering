@@ -1,0 +1,26 @@
+from sympy import *
+import numpy as np
+
+
+x = symbols('x')
+T_re = 1
+ref = -23
+PU_k = 0.018
+air_vis = 0.000013
+air_k = 0.026
+Pr = 0.7
+p = np.arange(0.01, 0.08, 0.005)
+D_L = 0.6
+A_re = 0.1
+h_s = 15
+h_re = 28
+
+for t in p:
+
+    Q_s = h_s * A_re * (ref-x)
+    Q_re = (ref-T_re)/((1/(h_re * A_re))*((t)/(PU_k * A_re))*(1/(h_s * A_re)))
+    eqn = Eq(Q_s, Q_re)
+
+    sol = solve(eqn,x)
+
+    print(sol,t)
